@@ -72,6 +72,6 @@ Create a Horizontal Pod Autoscaler (HPA) that uses the custom metric for network
 * Install [Prometheus Adapter](https://github.com/kubernetes-sigs/prometheus-adapter) 
   `kubectl apply -f https://github.com/kubernetes-sigs/prometheus-adapter/releases/download/v0.10.0/release-bundle.yaml`
 * Create network-latency metric via [service-monitor](https://github.com/StevenDevops/ThinkOn/blob/main/monitoring.yaml)
-* Create [HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+* Create [HPA](https://github.com/StevenDevops/ThinkOn/blob/main/hpa.yaml)
 
 
