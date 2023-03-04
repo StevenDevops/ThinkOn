@@ -1,0 +1,33 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: users-metrics-$ENV
+  namespace: myapp-$ENV
+  labels:
+    app: network-latency-users-$ENV
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter-users-$ENV
+  endpoints:
+    - port: metrics
+      interval: 15s
+      path: /metrics
+      scheme: http
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: shilfs-metrics-$ENV
+  namespace: myapp-$ENV
+  labels:
+    app: shilfs-network-latency-$ENV
+spec:
+  selector:
+    matchLabels:
+      app: users-metrics-$ENV
+  endpoints:
+    - port: metrics
+      interval: 15s
+      path: /metrics
+      scheme: http

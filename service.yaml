@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-svc-$ENV
+  namespace: myapp-$ENV
+  labels:
+    app: users-svc-$ENV
+spec:
+  type: ClusterIP
+  selector:
+    app: users-$ENV
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shifts-svc-$ENV
+  namespace: myapp-$ENV
+  labels:
+    app: shifts-svc-$ENV
+spec:
+  type: ClusterIP
+  selector:
+    app: shifts-$ENV
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-metrics-$ENV
+spec:
+  ports:
+    - name: metrics
+      port: 9100
+      targetPort: metrics
+  selector:
+    app: users-$ENV
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shifts-metrics-$ENV
+spec:
+  ports:
+    - name: metrics
+      port: 9100
+      targetPort: metrics
+  selector:
+    app: shifts-$ENV
+  type: ClusterIP
