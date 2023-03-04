@@ -19,7 +19,7 @@ metadata:
   namespace: myapp-$ENV
 spec:
   metrics:
-    - name: users_network_latency_seconds
+    - name: shilfts_network_latency_seconds
       value: 0.005
       timestamp: "2022-04-01T00:00:00Z"
       selector:
