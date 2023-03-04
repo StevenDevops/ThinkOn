@@ -4,7 +4,7 @@ metadata:
   name: users-svc-$ENV
   namespace: myapp-$ENV
   labels:
-    app: users-svc-$ENV
+    app: users-$ENV
 spec:
   type: ClusterIP
   selector:
@@ -20,7 +20,7 @@ metadata:
   name: shifts-svc-$ENV
   namespace: myapp-$ENV
   labels:
-    app: shifts-svc-$ENV
+    app: shifts-$ENV
 spec:
   type: ClusterIP
   selector:

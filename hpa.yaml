@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: users-deployment-$ENV
+    name: users-$ENV
   minReplicas: 3
   maxReplicas: 5
   metrics:
@@ -16,14 +16,10 @@ spec:
         target:
           type: Utilization
           averageUtilization: 70
-    - type: External
-      external:
-        metric:
-          name: network_latency_ms
-          selector:
-            matchLabels:
-              target: users-deployment-$ENV
-        targetValue: 90
+    - type: Pods
+      pods:
+        metricName: users_network_latency_seconds
+        targetAverageValue: 0.2
 ---
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
@@ -33,7 +29,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: shifts-deployment-$ENV
+    name: shifts-$ENV
   minReplicas: 3
   maxReplicas: 5
   metrics:
@@ -43,12 +39,7 @@ spec:
         target:
           type: Utilization
           averageUtilization: 70
-    - type: External
-      external:
-        metric:
-          name: network_latency_ms
-          selector:
-            matchLabels:
-              target: shifts-deployment-$ENV
-        targetValue: 90
-
+    - type: Pods
+      pods:
+        metricName: shifts_network_latency_seconds
+        targetAverageValue: 0.2

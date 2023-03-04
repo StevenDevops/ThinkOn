@@ -1,0 +1,27 @@
+apiVersion: custom.metrics.k8s.io/v1beta1
+kind: MetricValueList
+metadata:
+  name: users-network-latency
+  namespace: myapp-$ENV
+spec:
+  metrics:
+    - name: users_network_latency_seconds
+      value: 0.005
+      timestamp: "2022-04-01T00:00:00Z"
+      selector:
+        matchLabels:
+          app: users
+---
+apiVersion: custom.metrics.k8s.io/v1beta1
+kind: MetricValueList
+metadata:
+  name: shilfs-network-latency
+  namespace: myapp-$ENV
+spec:
+  metrics:
+    - name: users_network_latency_seconds
+      value: 0.005
+      timestamp: "2022-04-01T00:00:00Z"
+      selector:
+        matchLabels:
+          app: shilfs

@@ -57,21 +57,46 @@ envsubst < deployment.yaml | kubectl apply -f -
 
 6.) We can use [custom-metrics](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#scaling-on-custom-metrics) from HPA.
 The procedure will be:
+* Enable  [metrics](https://github.com/kubernetes-sigs/metrics-server)
 
-```
-Install and configure Prometheus to scrape network latency metrics from the pods of the deployment.
-
-Install and configure Prometheus Adapter to expose the Prometheus metrics to Kubernetes as custom metrics.
-
-Create a Horizontal Pod Autoscaler (HPA) that uses the custom metric for network latency to scale the deployment.
-```
-* First, we need to enable  [metrics](https://github.com/kubernetes-sigs/metrics-server)
   `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml`
-  By default, Kubernetes Metrics Server only collects CPU and memory metrics for pods, nodes, and namespaces. To collect other metrics such as network latency, custom metrics adapters or external monitoring solutions can be used. In this case, I think we can use prometheus exporter.
+
+  By default, Kubernetes Metrics Server only collects CPU and memory metrics for pods, nodes, and namespaces. To collect other metrics such as network latency, custom metrics adapters or external monitoring solutions can be used. In this case, I think we can u
+
 * Install [node-exporter](https://github.com/StevenDevops/ThinkOn/blob/main/deployment.yaml#L74-L76) for PODs via a sidecar
-* Install [Prometheus Adapter](https://github.com/kubernetes-sigs/prometheus-adapter) 
-  `kubectl apply -f https://github.com/kubernetes-sigs/prometheus-adapter/releases/download/v0.10.0/release-bundle.yaml`
-* Create network-latency metric via [service-monitor](https://github.com/StevenDevops/ThinkOn/blob/main/monitoring.yaml)
-* Create [HPA](https://github.com/StevenDevops/ThinkOn/blob/main/hpa.yaml)
+
+* Install and configure [Prometheus Adapter](https://github.com/kubernetes-sigs/prometheus-adapter)
+  ```
+  $ helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  $ helm repo update
+  $ helm install my-release prometheus-community/prometheus-adapter
+  ```
+  Update the custom rules when you install `prometheus-adapter` for creating `users_network_latency_seconds` and `shilfs_network_latency_seconds` metrics
+  ```
+  rules:
+    custom:
+    - seriesQuery: 'node_network_latency_seconds{pod="users*"}'
+      resources:
+        overrides:
+          pod:
+            resource: pod
+      name:
+        matches: "users_network_latency_seconds"
+        as: "network_latency_ms"
+      metricsQuery: 'avg_over_time(node_network_latency_seconds{pod=~"$pod", target="k8s"}[1m])*1000'
+    - seriesQuery: 'node_network_latency_seconds{pod="shilf*"}'
+      resources:
+        overrides:
+          pod:
+            resource: pod
+      name:
+        matches: "shilfs_network_latency_seconds"
+        as: "network_latency_ms"
+      metricsQuery: 'avg_over_time(node_network_latency_seconds{pod=~"$pod", target="k8s"}[1m])*1000'
+  ```
+
+* Create service monitor for collecting metrics via [service-monitor](https://github.com/StevenDevops/ThinkOn/blob/main/monitoring.yaml)
+* Create [custom-metrics](https://github.com/StevenDevops/ThinkOn/blob/main/custom-metrics.yaml)
+* Update [HPA](https://github.com/StevenDevops/ThinkOn/blob/main/hpa.yaml#L19-L21)
 
 

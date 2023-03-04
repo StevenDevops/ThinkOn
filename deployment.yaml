@@ -9,12 +9,12 @@ metadata:
   name: users-deployment-$ENV
   namespace: myapp-$ENV
   labels:
-    app: users-deployment
+    app: users-$ENV
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: users-deployment-$ENV
+      app: users-$ENV
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        app: users-deployment-$ENV
+        app: users-$ENV
     spec:
       containers:
         - name: users
@@ -82,7 +82,7 @@ metadata:
   name: shifts-deployment-$ENV
   namespace: myapp-$ENV
   labels:
-    app: shifts-deployment-$ENV
+    app: shifts-$ENV
 spec:
   replicas: 3
   selector:
